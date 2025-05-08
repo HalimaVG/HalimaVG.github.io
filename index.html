@@ -1,1 +1,966 @@
-<h1> Ez az én oldalam Halima</h1>
+<h1> A távolléti munka hatása a mentális egészségre</h1>
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <title>3D Adat Vizualizációk</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+            color: #333333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 60px;
+            margin: 40px 0;
+        }
+        .chart-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            height: 500px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        canvas {
+            width: 100% !important;
+            height: calc(100% - 70px) !important;
+            margin-top: 10px;
+        }
+        .chart-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333333;
+            margin-bottom: 6px;
+            text-align: center;
+            line-height: 1.3;
+        }
+        .chart-description {
+            font-size: 12px;
+            color: #666666;
+            margin-bottom: 15px;
+            text-align: center;
+            line-height: 1.4;
+            padding: 0 10px;
+        }
+        @media (max-width: 1000px) {
+            .chart-container {
+                height: 450px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="grid">
+            <div class="chart-container">
+                <h3 class="chart-title">Munkavégzési hely, Mentális egészség és Stressz kapcsolata</h3>
+                <p class="chart-description">
+                    Az oszlopdiagram mutatja, hogy a távmunkában dolgozók között magasabb a depresszió és stressz aránya, míg az irodai munkavégzésnél alacsonyabb a mentális egészségi problémák gyakorisága.
+                </p>
+                <canvas id="workLocationMentalHealthStress"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <h3 class="chart-title">Kor, Munkaóra és Stressz kapcsolata</h3>
+                <p class="chart-description">
+                    A vonaldiagram alapján a 36-45 éves korcsoportban a legmagasabb a stressz szintje, különösen a 40+ órás munkavégzés esetén, míg a 56+ éveseknél alacsonyabb a stressz szint.
+                </p>
+                <canvas id="ageWorkHoursStress"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <h3 class="chart-title">Megbeszélések, Munkavégzési-élet egyensúly és Stressz kapcsolata</h3>
+                <p class="chart-description">
+                    A halmozott oszlopdiagram szerint a heti 20+ megbeszélésnél jelentősen magasabb a stressz szint és rosszabb a munkavégzési-élet egyensúly, míg a kevesebb megbeszélésnél jobb az egyensúly.
+                </p>
+                <canvas id="meetingsWorkLifeStress"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <h3 class="chart-title">Cégtámogatás, Munkavégzési-élet egyensúly és Stressz kapcsolata</h3>
+                <p class="chart-description">
+                    A vízszintes oszlopdiagram mutatja, hogy a magas cégtámogatás mellett jelentősen jobb a munkavégzési-élet egyensúly és alacsonyabb a stressz szint, míg az alacsony támogatásnál rosszabb az egyensúly.
+                </p>
+                <canvas id="companySupportWorkLifeStress"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <h3 class="chart-title">Nem, Kor és Mentális egészség kapcsolata</h3>
+                <p class="chart-description">
+                    A halmozott oszlopdiagram részletesen mutatja a nemek és korcsoportok mentális egészségi állapotát. A nőknél magasabb a depresszió és szorongás aránya, míg a férfiaknál a kiégés gyakoribb a magasabb korosztályokban.
+                </p>
+                <canvas id="genderAgeMentalHealth"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <h3 class="chart-title">Iparág, Munkaóra és Stressz kapcsolata</h3>
+                <p class="chart-description">
+                    A csoportosított oszlopdiagram részletesen ábrázolja az iparágak stressz szintjét a munkaórák függvényében. Az egészségügyi szektorban a legmagasabb a stressz szint, míg az oktatásban és egyéb területeken alacsonyabb.
+                </p>
+                <canvas id="industryWorkHoursStress"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <h3 class="chart-title">Tapasztalat, Munkavégzési-élet egyensúly és Mentális egészség kapcsolata</h3>
+                <p class="chart-description">
+                    Az area diagram mutatja a tapasztalati szint és mentális egészség közötti kapcsolatot. A 0-2 év tapasztalattal rendelkezőknél gyakoribb a depresszió és szorongás, míg a 10+ év tapasztalattal rendelkezőknél jobb a munkavégzési-élet egyensúly.
+                </p>
+                <canvas id="experienceWorkLifeMentalHealth"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <h3 class="chart-title">Munkavégzési környezet és Produktivitás kapcsolata</h3>
+                <p class="chart-description">
+                    A csoportosított oszlopdiagram a munkavégzési környezet különböző aspektusainak hatását mutatja a produktivitásra. A diagram alapján látható, hogy a csapatmunka és a rugalmas munkaidő a legnagyobb pozitív hatással bír a teljesítményre, míg a zajos környezet és a gyakori megszakítások jelentősen csökkentik a hatékonyságot.
+                </p>
+                <canvas id="workEnvironmentProductivity"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <h3 class="chart-title">Mentális egészség és Munkavégzési teljesítmény kapcsolata</h3>
+                <p class="chart-description">
+                    A radar diagram a mentális egészség különböző aspektusainak hatását mutatja a munkavégzési teljesítményre. A diagram alapján látható, hogy a magas stressz szint és a depresszió jelentősen csökkenti a hatékonyságot és a kreativitást, míg a jó munkavégzési-élet egyensúly és a megfelelő pihenés növeli a teljesítményt.
+                </p>
+                <canvas id="mentalHealthWorkPerformance"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        Chart.register(ChartDataLabels);
+        
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                mode: 'nearest',
+                intersect: false,
+                axis: 'xy'
+            },
+            hover: {
+                mode: 'nearest',
+                intersect: true
+            },
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: {
+                        usePointStyle: true,
+                        padding: 20,
+                        font: {
+                            size: 12,
+                            weight: 'bold'
+                        },
+                        color: '#333333'
+                    }
+                },
+                tooltip: {
+                    enabled: true,
+                    mode: 'index',
+                    intersect: false,
+                    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                    titleColor: '#333333',
+                    bodyColor: '#666666',
+                    borderColor: '#dddddd',
+                    borderWidth: 1,
+                    padding: 12,
+                    displayColors: true,
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed.y !== undefined) {
+                                label += context.parsed.y + ' fő';
+                            } else if (context.parsed.r !== undefined) {
+                                label += context.parsed.r + ' fő';
+                            }
+                            return label;
+                        }
+                    }
+                },
+                datalabels: {
+                    display: true,
+                    color: '#333333',
+                    font: {
+                        weight: 'bold',
+                        size: 11
+                    },
+                    formatter: function(value) {
+                        return value > 100 ? value : '';
+                    }
+                }
+            }
+        };
+
+        // Munkavégzési hely, Mentális egészség, Stressz kapcsolata - Bar chart
+        new Chart(document.getElementById('workLocationMentalHealthStress'), {
+            type: 'bar',
+            data: {
+                labels: ['Távmunka', 'Hibrid', 'Irodai'],
+                datasets: [{
+                    label: 'Depresszió + Magas stressz',
+                    data: [1500, 1000, 800],
+                    backgroundColor: 'rgba(210, 108, 78, 0.85)',
+                    borderColor: '#D26C4E',
+                    borderWidth: 1,
+                    hoverBackgroundColor: 'rgba(210, 108, 78, 1)'
+                }, {
+                    label: 'Szorongás + Közepes stressz',
+                    data: [1200, 900, 700],
+                    backgroundColor: 'rgba(242, 140, 56, 0.85)',
+                    borderColor: '#F28C38',
+                    borderWidth: 1,
+                    hoverBackgroundColor: 'rgba(242, 140, 56, 1)'
+                }, {
+                    label: 'Kiégés + Alacsony stressz',
+                    data: [800, 1100, 900],
+                    backgroundColor: 'rgba(232, 174, 183, 0.85)',
+                    borderColor: '#E8AEB7',
+                    borderWidth: 1,
+                    hoverBackgroundColor: 'rgba(232, 174, 183, 1)'
+                }]
+            },
+            options: {
+                ...commonOptions,
+                plugins: {
+                    ...commonOptions.plugins,
+                    title: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Munkavégzési hely',
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            },
+                            color: '#333333'
+                        },
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#666666'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Válaszadók száma',
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            },
+                            color: '#333333'
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        ticks: {
+                            color: '#666666'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Kor, Munkaóra, Stressz szint kapcsolata - Line chart
+        new Chart(document.getElementById('ageWorkHoursStress'), {
+            type: 'line',
+            data: {
+                labels: ['18-25', '26-35', '36-45', '46-55', '56+'],
+                datasets: [{
+                    label: '40+ óra + Magas stressz',
+                    data: [900, 1200, 1500, 1100, 800],
+                    borderColor: '#D26C4E',
+                    borderWidth: 3,
+                    backgroundColor: 'rgba(210, 108, 78, 0.2)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointHoverRadius: 8,
+                    pointBackgroundColor: '#D26C4E',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
+                }, {
+                    label: '30-40 óra + Közepes stressz',
+                    data: [1100, 1400, 1200, 900, 700],
+                    borderColor: '#F28C38',
+                    borderWidth: 3,
+                    backgroundColor: 'rgba(242, 140, 56, 0.2)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointHoverRadius: 8,
+                    pointBackgroundColor: '#F28C38',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
+                }, {
+                    label: '30- óra + Alacsony stressz',
+                    data: [800, 600, 400, 300, 200],
+                    borderColor: '#E8AEB7',
+                    borderWidth: 3,
+                    backgroundColor: 'rgba(232, 174, 183, 0.2)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointHoverRadius: 8,
+                    pointBackgroundColor: '#E8AEB7',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
+                }]
+            },
+            options: {
+                ...commonOptions,
+                plugins: {
+                    ...commonOptions.plugins,
+                    datalabels: {
+                        display: false
+                    },
+                    title: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#666666'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        ticks: {
+                            color: '#666666'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Megbeszélések, Munkavégzési-élet egyensúly, Stressz kapcsolata - Stacked Bar
+        new Chart(document.getElementById('meetingsWorkLifeStress'), {
+            type: 'bar',
+            data: {
+                labels: ['0-5', '6-10', '11-15', '16-20', '20+'],
+                datasets: [{
+                    label: 'Rossz egyensúly + Magas stressz',
+                    data: [600, 900, 1200, 1500, 1800],
+                    backgroundColor: 'rgba(210, 108, 78, 0.85)',
+                    borderColor: '#D26C4E',
+                    borderWidth: 1,
+                    hoverBackgroundColor: 'rgba(210, 108, 78, 1)'
+                }, {
+                    label: 'Közepes egyensúly + Közepes stressz',
+                    data: [1200, 1500, 1200, 900, 600],
+                    backgroundColor: 'rgba(242, 140, 56, 0.85)',
+                    borderColor: '#F28C38',
+                    borderWidth: 1,
+                    hoverBackgroundColor: 'rgba(242, 140, 56, 1)'
+                }, {
+                    label: 'Jó egyensúly + Alacsony stressz',
+                    data: [1800, 1500, 1200, 900, 600],
+                    backgroundColor: 'rgba(232, 174, 183, 0.85)',
+                    borderColor: '#E8AEB7',
+                    borderWidth: 1,
+                    hoverBackgroundColor: 'rgba(232, 174, 183, 1)'
+                }]
+            },
+            options: {
+                ...commonOptions,
+                plugins: {
+                    ...commonOptions.plugins,
+                    title: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                        title: {
+                            display: true,
+                            text: 'Heti megbeszélések száma',
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        title: {
+                            display: true,
+                            text: 'Válaszadók száma',
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Cégtámogatás, Munkavégzési-élet egyensúly, Stressz kapcsolata - Horizontal Bar
+        new Chart(document.getElementById('companySupportWorkLifeStress'), {
+            type: 'bar',
+            data: {
+                labels: ['Alacsony', 'Közepes', 'Magas'],
+                datasets: [{
+                    label: 'Rossz egyensúly + Magas stressz',
+                    data: [2100, 1500, 900],
+                    backgroundColor: 'rgba(210, 108, 78, 0.85)',
+                    borderColor: '#D26C4E',
+                    borderWidth: 1,
+                    hoverBackgroundColor: 'rgba(210, 108, 78, 1)'
+                }, {
+                    label: 'Közepes egyensúly + Közepes stressz',
+                    data: [1500, 1800, 1200],
+                    backgroundColor: 'rgba(242, 140, 56, 0.85)',
+                    borderColor: '#F28C38',
+                    borderWidth: 1,
+                    hoverBackgroundColor: 'rgba(242, 140, 56, 1)'
+                }, {
+                    label: 'Jó egyensúly + Alacsony stressz',
+                    data: [900, 1200, 2400],
+                    backgroundColor: 'rgba(232, 174, 183, 0.85)',
+                    borderColor: '#E8AEB7',
+                    borderWidth: 1,
+                    hoverBackgroundColor: 'rgba(232, 174, 183, 1)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20,
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        enabled: true,
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: ${context.parsed.x} fő`;
+                            }
+                        }
+                    },
+                    datalabels: {
+                        display: true,
+                        color: '#fff',
+                        font: {
+                            weight: 'bold',
+                            size: 11
+                        },
+                        formatter: function(value) {
+                            return value > 100 ? value : '';
+                        }
+                    },
+                    title: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Válaszadók száma',
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Cégtámogatás szintje',
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Nem, Kor, Mentális egészség kapcsolata - 3D Bar
+        new Chart(document.getElementById('genderAgeMentalHealth'), {
+            type: 'bar',
+            data: {
+                labels: ['18-25', '26-35', '36-45', '46-55', '56+'],
+                datasets: [{
+                    label: 'Nő + Depresszió',
+                    data: [900, 720, 600, 480, 300],
+                    backgroundColor: 'rgba(210, 108, 78, 0.85)',
+                    borderColor: '#D26C4E',
+                    borderWidth: 1,
+                    hoverBackgroundColor: 'rgba(210, 108, 78, 1)',
+                    stack: 'Nő'
+                }, {
+                    label: 'Nő + Szorongás',
+                    data: [720, 840, 720, 600, 480],
+                    backgroundColor: 'rgba(210, 108, 78, 0.65)',
+                    borderColor: '#D26C4E',
+                    borderWidth: 1,
+                    hoverBackgroundColor: 'rgba(210, 108, 78, 0.8)',
+                    stack: 'Nő'
+                }, {
+                    label: 'Nő + Kiégés',
+                    data: [600, 720, 840, 720, 600],
+                    backgroundColor: 'rgba(210, 108, 78, 0.45)',
+                    borderColor: '#D26C4E',
+                    borderWidth: 1,
+                    hoverBackgroundColor: 'rgba(210, 108, 78, 0.6)',
+                    stack: 'Nő'
+                }, {
+                    label: 'Férfi + Depresszió',
+                    data: [600, 480, 360, 240, 120],
+                    backgroundColor: 'rgba(242, 140, 56, 0.85)',
+                    borderColor: '#F28C38',
+                    borderWidth: 1,
+                    hoverBackgroundColor: 'rgba(242, 140, 56, 1)',
+                    stack: 'Férfi'
+                }, {
+                    label: 'Férfi + Szorongás',
+                    data: [480, 600, 720, 600, 480],
+                    backgroundColor: 'rgba(242, 140, 56, 0.65)',
+                    borderColor: '#F28C38',
+                    borderWidth: 1,
+                    hoverBackgroundColor: 'rgba(242, 140, 56, 0.8)',
+                    stack: 'Férfi'
+                }, {
+                    label: 'Férfi + Kiégés',
+                    data: [360, 480, 600, 720, 840],
+                    backgroundColor: 'rgba(242, 140, 56, 0.45)',
+                    borderColor: '#F28C38',
+                    borderWidth: 1,
+                    hoverBackgroundColor: 'rgba(242, 140, 56, 0.6)',
+                    stack: 'Férfi'
+                }, {
+                    label: 'Nem bináris + Depresszió',
+                    data: [480, 360, 240, 120, 120],
+                    backgroundColor: 'rgba(232, 174, 183, 0.85)',
+                    borderColor: '#E8AEB7',
+                    borderWidth: 1,
+                    hoverBackgroundColor: 'rgba(232, 174, 183, 1)',
+                    stack: 'Nem bináris'
+                }, {
+                    label: 'Nem bináris + Szorongás',
+                    data: [360, 480, 360, 240, 120],
+                    backgroundColor: 'rgba(232, 174, 183, 0.65)',
+                    borderColor: '#E8AEB7',
+                    borderWidth: 1,
+                    hoverBackgroundColor: 'rgba(232, 174, 183, 0.8)',
+                    stack: 'Nem bináris'
+                }, {
+                    label: 'Nem bináris + Kiégés',
+                    data: [240, 360, 480, 360, 240],
+                    backgroundColor: 'rgba(232, 174, 183, 0.45)',
+                    borderColor: '#E8AEB7',
+                    borderWidth: 1,
+                    hoverBackgroundColor: 'rgba(232, 174, 183, 0.6)',
+                    stack: 'Nem bináris'
+                }]
+            },
+            options: {
+                ...commonOptions,
+                plugins: {
+                    ...commonOptions.plugins,
+                    title: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        stacked: true,
+                        title: {
+                            display: true,
+                            text: 'Kor',
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        stacked: true,
+                        title: {
+                            display: true,
+                            text: 'Válaszadók száma',
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Iparág, Munkaóra, Stressz kapcsolata - Grouped Bar
+        new Chart(document.getElementById('industryWorkHoursStress'), {
+            type: 'bar',
+            data: {
+                labels: ['IT', 'Pénzügy', 'Egészségügy', 'Oktatás', 'Egyéb'],
+                datasets: [{
+                    label: '40+ óra + Magas stressz',
+                    data: [840, 720, 960, 600, 480],
+                    backgroundColor: 'rgba(210, 108, 78, 0.85)',
+                    borderColor: '#D26C4E',
+                    borderWidth: 1,
+                    hoverBackgroundColor: 'rgba(210, 108, 78, 1)'
+                }, {
+                    label: '30-40 óra + Közepes stressz',
+                    data: [960, 840, 720, 840, 720],
+                    backgroundColor: 'rgba(242, 140, 56, 0.85)',
+                    borderColor: '#F28C38',
+                    borderWidth: 1,
+                    hoverBackgroundColor: 'rgba(242, 140, 56, 1)'
+                }, {
+                    label: '30- óra + Alacsony stressz',
+                    data: [600, 840, 720, 960, 1200],
+                    backgroundColor: 'rgba(232, 174, 183, 0.85)',
+                    borderColor: '#E8AEB7',
+                    borderWidth: 1,
+                    hoverBackgroundColor: 'rgba(232, 174, 183, 1)'
+                }]
+            },
+            options: {
+                ...commonOptions,
+                plugins: {
+                    ...commonOptions.plugins,
+                    title: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Iparág',
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Válaszadók száma',
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Tapasztalat, Munkavégzési-élet egyensúly, Mentális egészség kapcsolata - Area
+        new Chart(document.getElementById('experienceWorkLifeMentalHealth'), {
+            type: 'line',
+            data: {
+                labels: ['0-2 év', '3-5 év', '6-10 év', '10+ év'],
+                datasets: [{
+                    label: 'Rossz egyensúly + Depresszió',
+                    data: [600, 720, 840, 480],
+                    borderColor: '#D26C4E',
+                    borderWidth: 3,
+                    backgroundColor: 'rgba(210, 108, 78, 0.3)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointHoverRadius: 8,
+                    pointBackgroundColor: '#D26C4E',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
+                }, {
+                    label: 'Közepes egyensúly + Szorongás',
+                    data: [720, 840, 720, 600],
+                    borderColor: '#F28C38',
+                    borderWidth: 3,
+                    backgroundColor: 'rgba(242, 140, 56, 0.3)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointHoverRadius: 8,
+                    pointBackgroundColor: '#F28C38',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
+                }, {
+                    label: 'Jó egyensúly + Nincs',
+                    data: [1080, 840, 840, 1320],
+                    borderColor: '#E8AEB7',
+                    borderWidth: 3,
+                    backgroundColor: 'rgba(232, 174, 183, 0.3)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointHoverRadius: 8,
+                    pointBackgroundColor: '#E8AEB7',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
+                }]
+            },
+            options: {
+                ...commonOptions,
+                plugins: {
+                    ...commonOptions.plugins,
+                    datalabels: {
+                        display: false
+                    },
+                    title: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#666666'
+                        }
+                    },
+                    y: {
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        ticks: {
+                            color: '#666666'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Munkavégzési környezet és Produktivitás kapcsolata - Grouped Bar
+        new Chart(document.getElementById('workEnvironmentProductivity'), {
+            type: 'bar',
+            data: {
+                labels: [
+                    'Csapatmunka',
+                    'Rugalmas munkaidő',
+                    'Nyugodt környezet',
+                    'Ergonómiai berendezés',
+                    'Természetes fény',
+                    'Zöld terület',
+                    'Nagy zaj',
+                    'Gyakori megszakítások',
+                    'Rigid munkaidő',
+                    'Isolált munkavégzés'
+                ],
+                datasets: [{
+                    label: 'Magas produktivitás',
+                    data: [3000, 2800, 2600, 2400, 2200, 2000, 1200, 1000, 800, 600],
+                    backgroundColor: 'rgba(210, 108, 78, 0.85)',
+                    borderColor: '#D26C4E',
+                    borderWidth: 1,
+                    hoverBackgroundColor: 'rgba(210, 108, 78, 1)'
+                }, {
+                    label: 'Közepes produktivitás',
+                    data: [2600, 2400, 2200, 2000, 1800, 1600, 1000, 800, 600, 400],
+                    backgroundColor: 'rgba(242, 140, 56, 0.85)',
+                    borderColor: '#F28C38',
+                    borderWidth: 1,
+                    hoverBackgroundColor: 'rgba(242, 140, 56, 1)'
+                }, {
+                    label: 'Alacsony produktivitás',
+                    data: [2200, 2000, 1800, 1600, 1400, 1200, 600, 400, 200, 100],
+                    backgroundColor: 'rgba(232, 174, 183, 0.85)',
+                    borderColor: '#E8AEB7',
+                    borderWidth: 1,
+                    hoverBackgroundColor: 'rgba(232, 174, 183, 1)'
+                }]
+            },
+            options: {
+                ...commonOptions,
+                plugins: {
+                    ...commonOptions.plugins,
+                    datalabels: {
+                        display: false
+                    },
+                    title: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Környezeti tényezők',
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            },
+                            color: '#333333'
+                        },
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#666666'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Válaszadók száma',
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            },
+                            color: '#333333'
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        ticks: {
+                            color: '#666666'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Mentális egészség és Munkavégzési teljesítmény kapcsolata - Radar chart
+        new Chart(document.getElementById('mentalHealthWorkPerformance'), {
+            type: 'radar',
+            data: {
+                labels: [
+                    'Hatékonyság',
+                    'Kreativitás',
+                    'Csapatmunka',
+                    'Időgazdálkodás',
+                    'Problémamegoldás',
+                    'Kommunikáció',
+                    'Motiváció',
+                    'Minőség'
+                ],
+                datasets: [{
+                    label: 'Magas stressz + Depresszió',
+                    data: [1800, 1500, 2100, 2400, 1680, 1920, 1200, 2100],
+                    backgroundColor: 'rgba(210, 108, 78, 0.2)',
+                    borderColor: '#D26C4E',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#D26C4E',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#D26C4E'
+                }, {
+                    label: 'Közepes stressz + Szorongás',
+                    data: [3000, 2700, 3300, 3600, 2880, 3120, 2400, 3300],
+                    backgroundColor: 'rgba(242, 140, 56, 0.2)',
+                    borderColor: '#F28C38',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#F28C38',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#F28C38'
+                }, {
+                    label: 'Alacsony stressz + Jó egyensúly',
+                    data: [4800, 4500, 5100, 5400, 4680, 4920, 4200, 5100],
+                    backgroundColor: 'rgba(232, 174, 183, 0.2)',
+                    borderColor: '#E8AEB7',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#E8AEB7',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#E8AEB7'
+                }]
+            },
+            options: {
+                ...commonOptions,
+                plugins: {
+                    ...commonOptions.plugins,
+                    datalabels: {
+                        display: false
+                    },
+                    title: {
+                        display: false
+                    }
+                },
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        ticks: {
+                            display: false,
+                            color: '#666666'
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        angleLines: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        pointLabels: {
+                            color: '#333333'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html> 
